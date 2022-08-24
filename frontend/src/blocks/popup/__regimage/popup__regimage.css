@@ -1,0 +1,14 @@
+.popup__regimage {
+    width: 120px;
+    height: 120px;
+    margin-top: 60px;
+    margin-bottom: 32px;
+}
+
+.popup__regimage-success {
+    background-image: url("../../../images/Success.svg");
+}
+
+.popup__regimage-error {
+    background-image: url("../../../images/Error.svg");
+}

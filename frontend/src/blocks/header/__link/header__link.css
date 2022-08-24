@@ -1,0 +1,19 @@
+.header__link {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    color: white;
+    display: inline;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    text-decoration: none;
+}
+
+.header__link-sign-out {
+    color: #A9A9A9;
+    padding-left: 24px;
+}
