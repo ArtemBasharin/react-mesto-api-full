@@ -1,7 +1,10 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable no-unused-vars */
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const cors = require('cors');
 const helmet = require('helmet');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
@@ -19,9 +22,30 @@ const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
+
+app.use(cors({
+  credentials: true,
+  origin: [
+    'https://localhost:3000',
+    'http://localhost3000',
+    'https://localhost:3001',
+    'http://localhost3001',
+    'https://artbash.nomoredomains.sbs',
+    'http://artbash.nomoredomains.sbs',
+    'https://api.artbash.nomoredomains.sbs',
+    'http://api.artbash.nomoredomains.sbs',
+    'https://web.postman.co',
+  ],
+}));
+
 app.use(helmet());
 app.use(requestLogger);
 
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 app.post('/signin', validateLogin, login);
 app.post('/signup', validateUser, createUser);
 app.use(auth);
