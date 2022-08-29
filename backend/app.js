@@ -34,7 +34,6 @@ app.use(cors({
     'http://artbash.nomoredomains.sbs',
     'https://api.artbash.nomoredomains.sbs',
     'http://api.artbash.nomoredomains.sbs',
-    'https://web.postman.co',
   ],
 }));
 
