@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 const BadReqErr = require('../errors/BadReqErr');
 const PageNotFound = require('../errors/PageNotFound');
 const ForbidErr = require('../errors/ForbidErr');

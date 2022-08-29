@@ -95,7 +95,7 @@ class MyApi {
 }
 
 const api = new MyApi({
-  url: "https://mesto.nomoreparties.co/v1/cohort-41",
+  url: "https://artbash.nomoredomains.sbs",
   headers: {
     "content-type": "application/json",
     authorization: "37e0e7dd-b074-4ce5-8552-85f100e53932",
