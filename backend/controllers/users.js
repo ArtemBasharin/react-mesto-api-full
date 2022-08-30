@@ -1,13 +1,17 @@
+/* eslint-disable indent */
 /* eslint-disable linebreak-style */
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const PageNotFound = require('../errors/PageNotFound');
 const BadReqErr = require('../errors/BadReqErr');
-const AuthErr = require('../errors/AuthErr');
+// const AuthErr = require('../errors/AuthErr');
 const ConflictReqErr = require('../errors/ConflictReqErr');
 
 const User = require('../models/user');
+
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUsers = (_, res, next) => {
   User.find({})
@@ -95,15 +99,21 @@ const updateUserAvatar = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findUserByCredentials(email, password)
-    .then((user) => {
-      if (!user) {
-        throw new AuthErr('Неправильные почта или пароль');
-      }
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-      res.send({ token });
+  return User.findUserByCredentials(email, password)
+  .then((user) => {
+    const token = jwt.sign(
+      { _id: user._id },
+      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      { expiresIn: '7d' },
+    );
+    res.cookie('jwt', token, {
+      maxAge: 3600000 * 24 * 7,
+      httpOnly: true,
+      domain: 'artbash.nomoredomains.sbs',
     })
-    .catch(next);
+      .send({ token });
+  })
+  .catch(next);
 };
 
 const getCurrentUser = (req, res, next) => {

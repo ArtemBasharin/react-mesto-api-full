@@ -1,4 +1,4 @@
-export const base_url = "https://auth.nomoreparties.co";
+export const base_url = "https://artbash.nomoredomains.sbs";
 
 function checkResponse(res) {
   if (res.ok) {
