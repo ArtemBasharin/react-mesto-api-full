@@ -28,12 +28,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(requestLogger);
 app.use(cors({
-  credentials: true,
   origin: [
     'http://localhost:3000',
     'https://artbash.nomoredomains.sbs',
     'http://artbash.nomoredomains.sbs',
   ],
+  credentials: true,
 }));
 
 app.get('/crash-test', () => {
