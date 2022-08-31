@@ -103,7 +103,7 @@ const login = (req, res, next) => {
   .then((user) => {
     const token = jwt.sign(
       { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
       { expiresIn: '7d' },
     );
     res.cookie('jwt', token, {
@@ -127,6 +127,10 @@ const getCurrentUser = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+const logout = (req, res) => {
+  res.clearCookie('jwt').send({ message: 'Вы вышли из системы' });
+};
+
 module.exports = {
   getUsers,
   getUserById,
@@ -135,4 +139,5 @@ module.exports = {
   updateUserAvatar,
   login,
   getCurrentUser,
+  logout,
 };
