@@ -1,4 +1,4 @@
-export const base_url = "https://artbash.nomoredomains.sbs";
+export const base_url = "https://api.artbash.nomoredomains.sbs";
 
 function checkResponse(res) {
   if (res.ok) {
