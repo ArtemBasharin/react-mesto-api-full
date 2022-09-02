@@ -1,25 +1,39 @@
+import { base_url } from "./auth";
+
 export function checkResponse(res) {
   if (res.ok) return res.json();
   return Promise.reject(`Ошибка ${res.status}`);
 }
 
 class MyApi {
-  constructor(config) {
-    this._url = config.url;
-    this._headers = config.headers;
+  constructor(url, config) {
+    this._url = url;
+    this._config = config;
+  }
+
+  setAuthHeader(jwt){
+    console.log(jwt);
+    this._config = {
+      ...this._config, 
+      headers: {
+        ...this._config.headers, 
+        Authorization: `Bearer ${jwt}`
+      },
+    }
   }
 
   getInitialCards() {
     return fetch(`${this._url}/cards`, {
-      method: "GET",
-      headers: this._headers,
+     ...this._config, 
+     method: "GET",
     }).then(checkResponse);
   }
 
   getUserInfo() {
+    console.log(this._config)
     return fetch(`${this._url}/users/me`, {
+      ...this._config,
       method: "GET",
-      headers: this._headers,
     })
       .then(checkResponse)
       .catch((err) => {
@@ -29,8 +43,8 @@ class MyApi {
 
   setUserInfo(name, employment) {
     return fetch(`${this._url}/users/me`, {
+      ...this._config,
       method: "PATCH",
-      headers: this._headers,
       body: JSON.stringify({
         name: name,
         about: employment,
@@ -44,8 +58,8 @@ class MyApi {
 
   setAvatar(avatar) {
     return fetch(`${this._url}/users/me/avatar`, {
+      ...this._config,
       method: "PATCH",
-      headers: this._headers,
       body: JSON.stringify({
         avatar: avatar,
       }),
@@ -58,8 +72,8 @@ class MyApi {
 
   postNewCard(name, link) {
     return fetch(`${this._url}/cards`, {
+      ...this._config,
       method: "POST",
-      headers: this._headers,
       body: JSON.stringify({
         name: name,
         link: link,
@@ -72,9 +86,9 @@ class MyApi {
   }
 
   likeCard(cardId, isLiked) {
-    return fetch(`${this._url}/cards/likes/${cardId}`, {
+    return fetch(`${this._url}/cards/${cardId}/likes`, {
+      ...this._config,
       method: isLiked ? "DELETE" : "PUT",
-      headers: this._headers,
     })
       .then(checkResponse)
       .catch((err) => {
@@ -84,8 +98,8 @@ class MyApi {
 
   deleteCard(cardId) {
     return fetch(`${this._url}/cards/${cardId}`, {
+      ...this._config,
       method: "DELETE",
-      headers: this._headers,
     })
       .then(checkResponse)
       .catch((err) => {
@@ -94,12 +108,15 @@ class MyApi {
   }
 }
 
-const api = new MyApi({
-  url: "https://api.artbash.nomoredomains.sbs",
-  headers: {
-    "content-type": "application/json",
-    authorization: "37e0e7dd-b074-4ce5-8552-85f100e53932",
-  },
-});
+const api = new MyApi(
+  base_url,
+  {
+    credentials: "include",
+    headers: {
+      'Sec-Fetch-Site': 'cross-site',
+      "content-type": "application/json",
+    },
+  }
+);
 
 export default api;
