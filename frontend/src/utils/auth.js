@@ -1,7 +1,7 @@
 import api from "./api";
 
 export const base_url = process.env.NODE_ENV === 'production' ? "https://api.artbash.nomoredomains.sbs" : "http://localhost:3000";
-console.log(base_url);
+
 function checkResponse(res) {
   if (res.ok) {
     return res.json();
