@@ -1,4 +1,6 @@
-export const base_url = "https://api.artbash.nomoredomains.sbs";
+import api from "./api";
+
+export const base_url = process.env.NODE_ENV === 'production' ? "https://api.artbash.nomoredomains.sbs" : "http://localhost:3000";
 
 function checkResponse(res) {
   if (res.ok) {
@@ -28,20 +30,10 @@ export const authorize = (email, password) => {
     .then(checkResponse)
     .then((data) => {
       if (data.token) {
+        api.setAuthHeader(data.token);
         localStorage.setItem("token", data.token);
         return data;
       }
     });
 };
 
-export const getContent = (jwt) => {
-  return fetch(`${base_url}/users/me`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-    },
-  })
-    .then(checkResponse)
-    .then((data) => data);
-};

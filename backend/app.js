@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(requestLogger);
 app.use(cors({
   origin: [
-    'http://localhost:3000',
+    'http://localhost:3001',
     'https://artbash.nomoredomains.sbs',
     'http://artbash.nomoredomains.sbs',
   ],

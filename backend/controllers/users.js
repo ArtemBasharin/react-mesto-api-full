@@ -11,7 +11,7 @@ const ConflictReqErr = require('../errors/ConflictReqErr');
 
 const User = require('../models/user');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = process.env;
 
 const getUsers = (_, res, next) => {
   User.find({})
@@ -87,7 +87,7 @@ const updateUserAvatar = (req, res, next) => {
       if (!user) {
         return next(new PageNotFound('Пользователь не найден'));
       }
-      return res.send({ data: user });
+      return res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -103,7 +103,7 @@ const login = (req, res, next) => {
   .then((user) => {
     const token = jwt.sign(
       { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
+      JWT_SECRET,
       { expiresIn: '7d' },
     );
     res.cookie('jwt', token, {

@@ -7,7 +7,7 @@ const Card = require('../models/card');
 
 const getCards = (_, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.send({ cards }))
     .catch(next);
 };
 

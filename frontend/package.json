@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && scp -r ./build/* artembash@51.250.85.95:/home/artembash/build" 
+    "deploy": "scp -r ./build/* artembash@51.250.85.95:/home/artembash/react-mesto-api-full/frontend/build",
+    "build:deploy": "npm run build && npm run deploy"
   },
   "eslintConfig": {
     "extends": [

@@ -15,8 +15,6 @@ import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 
-import * as auth from "../utils/auth.js";
-
 function App() {
   const [isEditProfilePopupOpened, setIsEditProfilePopupOpened] = useState(
     false
@@ -37,29 +35,14 @@ function App() {
 
     api
       .getInitialCards()
-      .then((data) => {
-        setCards(data);
+      .then(({cards}) => {
+        setCards(cards);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [loggedIn]);
 
-  ///
-  useEffect(() => {
-    if (!loggedIn) return;
-
-    api
-      .getUserInfo()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [loggedIn]);
-
-  ///
   function handleLogin() {
     setLoggedIn(true);
   }
@@ -67,11 +50,15 @@ function App() {
   ///
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      auth
-        .getContent(token)
+    const isPageRefreshed = token && !loggedIn;
+    const ifFirstLogin = loggedIn && userEmail.length === 0;
+    if (isPageRefreshed || ifFirstLogin) {
+      if (token) api.setAuthHeader(token);
+      api
+        .getUserInfo()
         .then((data) => {
           if (data) {
+            setCurrentUser(data.data);
             setUserEmail(data.data.email);
             handleLogin();
             history.push("/");
@@ -125,9 +112,10 @@ function App() {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     api
       .likeCard(card._id, isLiked)
-      .then((newCard) => {
+      .then(({data}) => {
+        console.log(data);
         setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
+          state.map((c) => (c._id === card._id ? data : c))
         );
       })
       .catch((err) => {
@@ -151,7 +139,7 @@ function App() {
   function handleUpdateUser({ name, about }) {
     api
       .setUserInfo(name, about)
-      .then((data) => {
+      .then(({data}) => {
         setCurrentUser(data);
         closeAllPopups();
       })
@@ -164,8 +152,8 @@ function App() {
   function handleUpdateAvatar({ avatar }) {
     api
       .setAvatar(avatar)
-      .then((data) => {
-        setCurrentUser(data);
+      .then(({user}) => {
+        setCurrentUser(user);
         closeAllPopups();
       })
       .catch((err) => {
@@ -178,7 +166,8 @@ function App() {
     api
       .postNewCard(name, link)
       .then((newCard) => {
-        setCards([newCard, ...cards]);
+        console.log(cards, newCard);
+        setCards([newCard.data, ...cards]);
         closeAllPopups();
       })
       .catch((err) => {
